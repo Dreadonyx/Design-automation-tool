@@ -1,0 +1,7 @@
+-r requirements.txt
+# Optional: install torch from its CPU index first (see README).
+diffusers>=0.35,<1
+transformers>=4.45,<5
+accelerate>=1,<2
+safetensors>=0.5,<1
+huggingface_hub>=0.34,<1

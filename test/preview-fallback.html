@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slate Summit — Design Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root { --bg:#0b0d14; --card:#141826; --line:#252b3f; --text:#eef0f6; --muted:#98a0b8; --accent:#7c6cff; --accent2:#22d3ee; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--text); font:15px/1.6 Inter, system-ui, sans-serif; padding-bottom:80px; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 24px; }
+  header { padding:40px 0 8px; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 6px; }
+  .chip { font:600 12px/1 Inter; letter-spacing:.06em; text-transform:uppercase; padding:7px 12px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:var(--card); }
+  .chip.hl { color:#fff; background:linear-gradient(90deg, var(--accent), var(--accent2)); border:0; }
+  h1.title { font:700 44px/1.1 'Space Grotesk', sans-serif; letter-spacing:-.01em; }
+  p.rationale { color:var(--muted); max-width:720px; margin-top:10px; }
+  .toplinks { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  a.btn, button.btn { display:inline-block; text-decoration:none; cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--text); border-radius:10px; padding:10px 16px; font:600 13.5px Inter; }
+  a.btn:hover, button.btn:hover { border-color:var(--accent); }
+  button.btn.primary { background:linear-gradient(90deg, var(--accent), var(--accent2)); border:0; color:#fff; }
+  h2.sec { font:700 22px 'Space Grotesk', sans-serif; margin:44px 0 16px; display:flex; align-items:center; gap:12px; }
+  h2.sec::after { content:''; flex:1; height:1px; background:var(--line); }
+  .sechint { color:var(--muted); font-size:13.5px; margin:-8px 0 18px; }
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; }
+  .swatch { border-radius:12px; padding:18px 14px; min-height:92px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; border:1px solid rgba(255,255,255,.08); }
+  .swatch.small { min-height:72px; padding:12px 14px; }
+  .swatch .role { font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; opacity:.8; }
+  .swatch .hex { font:600 13px/1 'Space Grotesk', monospace; }
+  .brandrow { margin-top:10px; }
+  .typo { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; }
+  .typo .sample-h1 { font-family:'IBM Plex Sans', sans-serif; font-weight:700; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.05; letter-spacing:-0.02em; }
+  .typo .sample-h2 { font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:clamp(1.3rem,2.6vw,1.9rem); line-height:1.15; margin-top:14px; color:var(--muted); }
+  .typo .sample-body { font-family:'Inter', sans-serif; font-size:1rem; line-height:1.65; margin-top:16px; max-width:640px; }
+  .typo .sample-cap { font-family:'Inter', sans-serif; font-weight:700; font-size:.8rem; letter-spacing:.09em; text-transform:uppercase; margin-top:16px; color:var(--muted); }
+  table.spec { width:100%; border-collapse:collapse; margin-top:22px; font-size:13.5px; }
+  table.spec th, table.spec td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); }
+  table.spec th { color:var(--muted); font:600 11px/1 Inter; letter-spacing:.07em; text-transform:uppercase; }
+  .typo .btns { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .prev { background:#000; }
+  .prev svg { width:100%; height:auto; display:block; }
+  .cardbar { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; }
+  .cardname { font:600 13px 'Space Grotesk', sans-serif; color:var(--muted); }
+  button.mini { border:1px solid var(--line); background:#0e1220; color:var(--text); border-radius:8px; padding:6px 10px; font:600 12px Inter; cursor:pointer; }
+  button.mini:hover { border-color:var(--accent2); }
+
+  /* Standalone Components / Stickers Grid (Checkerboard for transparency) */
+  .comp-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
+  .comp-prev {
+    background-color:#161a29;
+    background-image:linear-gradient(45deg, #1f2538 25%, transparent 25%), linear-gradient(-45deg, #1f2538 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1f2538 75%), linear-gradient(-45deg, transparent 75%, #1f2538 75%);
+    background-size:16px 16px;
+    background-position:0 0, 0 8px, 8px -8px, -8px 0px;
+    padding:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:190px;
+  }
+  .comp-prev svg { max-width:140px; max-height:140px; width:100%; height:auto; display:block; filter:drop-shadow(0 6px 16px rgba(0,0,0,0.4)); }
+
+  /* Track 2 Image Prompts */
+  .prompt-card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:14px; }
+  .prompt-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .prompt-title { font:600 14px 'Space Grotesk', sans-serif; color:#fff; }
+  .prompt-body { background:#0e1220; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font:13px/1.6 Inter, monospace; color:var(--muted); white-space:pre-wrap; }
+  .prompt-sublist { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
+  .prompt-subitem { background:#0e1220; border:1px solid var(--line); border-radius:8px; padding:12px 14px; display:flex; flex-direction:column; gap:6px; }
+  .prompt-subhead { display:flex; justify-content:space-between; align-items:center; }
+  .prompt-subname { font:600 12.5px Inter; color:var(--text); }
+
+  #toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(80px); background:#fff; color:#111; font:600 13.5px Inter; padding:11px 18px; border-radius:10px; transition:transform .25s; z-index:9; }
+  #toast.show { transform:translateX(-50%) translateY(0); }
+  footer { margin-top:56px; color:var(--muted); font-size:12.5px; }
+  code { background:#0e1220; border:1px solid var(--line); border-radius:6px; padding:1px 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="chips">
+      <span class="chip hl">minimal</span>
+      <span class="chip">light theme</span>
+      <span class="chip">2480&times;3508</span>
+      <span class="chip">4 backgrounds</span>
+      <span class="chip">6 stickers</span>
+      <span class="chip">Built-in theme engine</span>
+    </div>
+    <h1 class="title">Slate Summit</h1>
+    
+    <p class="rationale">Brief: &ldquo;corporate finance summit 2026&rdquo;</p>
+    <div class="toplinks">
+      <button class="btn primary" id="zip-all">&darr; Download full kit (ZIP)</button>
+      <a class="btn" href="?brief=corporate%20finance%20summit%202026&count=4&size=a4&seed=481647">&#127922; Reroll designs</a>
+      <a class="btn" href="?">&larr; New brief</a>
+    </div>
+  </header>
+
+  <h2 class="sec">Color palette</h2>
+  <div class="swatches"><div class="swatch" data-copy="#fbfefa" style="background:#fbfefa;color:#14161c"><span class="role">bg</span><span class="hex">#FBFEFA</span></div><div class="swatch" data-copy="#f0f3ef" style="background:#f0f3ef;color:#14161c"><span class="role">surface</span><span class="hex">#F0F3EF</span></div><div class="swatch" data-copy="#1D3557" style="background:#1D3557;color:#f7f8fa"><span class="role">primary</span><span class="hex">#1D3557</span></div><div class="swatch" data-copy="#457B9D" style="background:#457B9D;color:#f7f8fa"><span class="role">secondary</span><span class="hex">#457B9D</span></div><div class="swatch" data-copy="#E63946" style="background:#E63946;color:#f7f8fa"><span class="role">accent</span><span class="hex">#E63946</span></div><div class="swatch" data-copy="#14161c" style="background:#14161c;color:#f7f8fa"><span class="role">text</span><span class="hex">#14161C</span></div><div class="swatch" data-copy="#757779" style="background:#757779;color:#f7f8fa"><span class="role">muted</span><span class="hex">#757779</span></div></div>
+  <div class="swatches brandrow"><div class="swatch small" data-copy="#1D3557" style="background:#1D3557;color:#f7f8fa"><span class="role">brand-1</span><span class="hex">#1D3557</span></div><div class="swatch small" data-copy="#457B9D" style="background:#457B9D;color:#f7f8fa"><span class="role">brand-2</span><span class="hex">#457B9D</span></div><div class="swatch small" data-copy="#A8DADC" style="background:#A8DADC;color:#14161c"><span class="role">brand-3</span><span class="hex">#A8DADC</span></div><div class="swatch small" data-copy="#F1FAEE" style="background:#F1FAEE;color:#14161c"><span class="role">brand-4</span><span class="hex">#F1FAEE</span></div><div class="swatch small" data-copy="#E63946" style="background:#E63946;color:#f7f8fa"><span class="role">brand-5</span><span class="hex">#E63946</span></div></div>
+
+  <h2 class="sec">Typography</h2>
+  <div class="typo">
+    <div class="sample-cap">Caption &middot; Inter 700</div>
+    <div class="sample-h1">Design once, generate forever.</div>
+    <div class="sample-h2">Subheader in IBM Plex Sans &mdash; set the tone, keep the rhythm</div>
+    <div class="sample-body">Body text in Inter. This paragraph shows measure, rhythm and contrast on real copy. Use it for descriptions, agendas, speaker bios and long-form website content. Click any swatch above to copy its hex.</div>
+    <table class="spec">
+      <tr><th>Element</th><th>Font</th><th>Weight</th><th>Size</th><th>Line height</th><th>Tracking</th></tr>
+      <tr><td>Header / H1</td><td>IBM Plex Sans</td><td>700</td><td>clamp(2.8rem, 6vw, 4.5rem)</td><td>1.05</td><td>-0.02em</td></tr><tr><td>Subheader / H2</td><td>IBM Plex Sans</td><td>600</td><td>clamp(1.5rem, 3vw, 2.25rem)</td><td>1.15</td><td>-0.01em</td></tr><tr><td>Body</td><td>Inter</td><td>400</td><td>1rem</td><td>1.65</td><td>0</td></tr><tr><td>Caption / Label</td><td>Inter</td><td>700</td><td>0.8rem</td><td>1.4</td><td>0.09em</td></tr>
+    </table>
+    <div class="btns">
+      <button class="btn" id="copy-css">Copy CSS tokens</button>
+      <button class="btn" id="copy-link">Copy Google Fonts &lt;link&gt;</button>
+      <button class="btn" id="dl-json">Download theme.json</button>
+    </div>
+  </div>
+
+  <h2 class="sec">Backgrounds (Zero Text)</h2>
+  <p class="sechint">Full-bleed generative poster backgrounds with pure visual atmosphere &mdash; ready for headline and copy placement.</p>
+  <div class="grid"><div class="card">
+    <div class="prev" id="prev0"></div>
+    <div class="cardbar">
+      <span class="cardname">Geometric 01</span>
+      <span class="cardbtns">
+        <button class="mini btn-svg" data-i="0">SVG</button>
+        <button class="mini btn-png" data-i="0">PNG</button>
+      </span>
+    </div>
+  </div><div class="card">
+    <div class="prev" id="prev1"></div>
+    <div class="cardbar">
+      <span class="cardname">Waves 02</span>
+      <span class="cardbtns">
+        <button class="mini btn-svg" data-i="1">SVG</button>
+        <button class="mini btn-png" data-i="1">PNG</button>
+      </span>
+    </div>
+  </div><div class="card">
+    <div class="prev" id="prev2"></div>
+    <div class="cardbar">
+      <span class="cardname">Dot Grid 03</span>
+      <span class="cardbtns">
+        <button class="mini btn-svg" data-i="2">SVG</button>
+        <button class="mini btn-png" data-i="2">PNG</button>
+      </span>
+    </div>
+  </div><div class="card">
+    <div class="prev" id="prev3"></div>
+    <div class="cardbar">
+      <span class="cardname">Geometric 04</span>
+      <span class="cardbtns">
+        <button class="mini btn-svg" data-i="3">SVG</button>
+        <button class="mini btn-png" data-i="3">PNG</button>
+      </span>
+    </div>
+  </div></div>
+
+  <h2 class="sec">Components &amp; Stickers (Transparent)</h2>
+  <p class="sechint">Standalone transparent vector assets &mdash; no background fill, no text. Ideal for collage layering, stamps, stickers, and badges.</p>
+  <div class="comp-grid"><div class="card comp-card">
+    <div class="comp-prev" id="cprev0"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Star 01</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="0">SVG</button>
+        <button class="mini btn-comp-png" data-ci="0">PNG</button>
+      </span>
+    </div>
+  </div><div class="card comp-card">
+    <div class="comp-prev" id="cprev1"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Blob 02</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="1">SVG</button>
+        <button class="mini btn-comp-png" data-ci="1">PNG</button>
+      </span>
+    </div>
+  </div><div class="card comp-card">
+    <div class="comp-prev" id="cprev2"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Burst 03</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="2">SVG</button>
+        <button class="mini btn-comp-png" data-ci="2">PNG</button>
+      </span>
+    </div>
+  </div><div class="card comp-card">
+    <div class="comp-prev" id="cprev3"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Ring 04</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="3">SVG</button>
+        <button class="mini btn-comp-png" data-ci="3">PNG</button>
+      </span>
+    </div>
+  </div><div class="card comp-card">
+    <div class="comp-prev" id="cprev4"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Arrow 05</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="4">SVG</button>
+        <button class="mini btn-comp-png" data-ci="4">PNG</button>
+      </span>
+    </div>
+  </div><div class="card comp-card">
+    <div class="comp-prev" id="cprev5"></div>
+    <div class="cardbar">
+      <span class="cardname">Sticker Torn Edge 06</span>
+      <span class="cardbtns">
+        <button class="mini btn-comp-svg" data-ci="5">SVG</button>
+        <button class="mini btn-comp-png" data-ci="5">PNG</button>
+      </span>
+    </div>
+  </div></div>
+
+  <h2 class="sec">Image Model Prompts (Track 2)</h2>
+  <p class="sechint">Ready-to-use prompts with this kit's exact mood and palette for Pollinations, Cloudflare AI, FLUX, or Midjourney. Run isolated components through rembg for instant alpha cutouts.</p>
+  <div class="prompt-card">
+    <div class="prompt-head">
+      <span class="prompt-title">Abstract Texture Background Prompt</span>
+      <button class="mini" id="copy-bg-prompt">Copy Prompt</button>
+    </div>
+    <div class="prompt-body" id="bg-prompt-text">Abstract textured background, Slate Summit aesthetic. Vintage paper grain texture with subtle halftone dot pattern. Muted duotone color grade using #1D3557 and #457B9D. No text, no letters, no words, no logos, no people, no faces, no objects — pure abstract texture only. Flat even lighting, no vignette, edge-to-edge texture, seamless.</div>
+  </div>
+  <div class="prompt-card">
+    <div class="prompt-head">
+      <span class="prompt-title">Isolated Component Prompts (White Background &rarr; rembg)</span>
+      <button class="mini" id="copy-all-prompts">Copy All Prompts</button>
+    </div>
+    <div class="prompt-sublist">
+      
+        <div class="prompt-subitem">
+          <div class="prompt-subhead">
+            <span class="prompt-subname">Vintage Flower Illustration</span>
+            <button class="mini btn-copy-cp" data-cidx="0">Copy</button>
+          </div>
+          <div class="prompt-body" id="cp-text-0">A single isolated vintage flower illustration in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.</div>
+        </div>
+      
+        <div class="prompt-subitem">
+          <div class="prompt-subhead">
+            <span class="prompt-subname">Retro Boombox Line-Art</span>
+            <button class="mini btn-copy-cp" data-cidx="1">Copy</button>
+          </div>
+          <div class="prompt-body" id="cp-text-1">A single isolated retro boombox line-art in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.</div>
+        </div>
+      
+        <div class="prompt-subitem">
+          <div class="prompt-subhead">
+            <span class="prompt-subname">Torn Paper Scrap</span>
+            <button class="mini btn-copy-cp" data-cidx="2">Copy</button>
+          </div>
+          <div class="prompt-body" id="cp-text-2">A single isolated torn paper scrap in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.</div>
+        </div>
+      
+        <div class="prompt-subitem">
+          <div class="prompt-subhead">
+            <span class="prompt-subname">Halftone Sun Burst Shape</span>
+            <button class="mini btn-copy-cp" data-cidx="3">Copy</button>
+          </div>
+          <div class="prompt-body" id="cp-text-3">A single isolated halftone sun burst shape in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.</div>
+        </div>
+      
+        <div class="prompt-subitem">
+          <div class="prompt-subhead">
+            <span class="prompt-subname">Abstract Squiggle Line Doodle</span>
+            <button class="mini btn-copy-cp" data-cidx="4">Copy</button>
+          </div>
+          <div class="prompt-body" id="cp-text-4">A single isolated abstract squiggle line doodle in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.</div>
+        </div>
+      
+    </div>
+  </div>
+
+  <footer>Generated by Design Agent &middot; seed <code>430342</code> &middot; call with <code>?brief=...&amp;count=4&amp;size=a4&amp;seed=430342</code> to reproduce this exact kit.</footer>
+</div>
+
+<div id="toast">Copied</div>
+<script type="application/json" id="design-data">{"W":2480,"H":3508,"sizeKey":"a4","slug":"slate-summit","theme":{"name":"Slate Summit","mood":"Slate Summit","vibe":"minimal","dark":false,"colors":["#1D3557","#457B9D","#A8DADC","#F1FAEE","#E63946"],"roles":{"bg":"#fbfefa","surface":"#f0f3ef","primary":"#1D3557","secondary":"#457B9D","accent":"#E63946","text":"#14161c","muted":"#757779"},"source":"Built-in theme engine"},"svgs":[{"name":"Geometric 01","style":"geometric","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"2480\" height=\"3508\" viewBox=\"0 0 2480 3508\">\u003cdefs>\u003cfilter id=\"d0_gr\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\">\u003cfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\" stitchTiles=\"stitch\"/>\u003cfeColorMatrix type=\"matrix\" values=\"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0.55 0.55 0 0\"/>\u003c/filter>\u003c/defs>\u003crect width=\"2480\" height=\"3508\" fill=\"#fbfefa\"/>\u003crect x=\"1508.7\" y=\"994.1\" width=\"1129.2\" height=\"1129.2\" fill=\"#1D3557\" opacity=\"0.4\" transform=\"rotate(222 2073.3 1558.7)\"/>\u003ccircle cx=\"1475.1\" cy=\"2828.2\" r=\"576.2\" fill=\"none\" stroke=\"#457B9D\" stroke-width=\"27.6\" opacity=\"0.9\"/>\u003cpolygon points=\"322.1,1936.9 626.1,2461.0 18.1,2461.0\" fill=\"none\" stroke=\"#A8DADC\" stroke-width=\"34.5\" opacity=\"0.9\" transform=\"rotate(94 322.1 2286.3)\"/>\u003ccircle cx=\"2029.6\" cy=\"326.6\" r=\"459.6\" fill=\"none\" stroke=\"#bcc3ba\" stroke-width=\"15.5\" opacity=\"0.7\"/>\u003crect x=\"993.3\" y=\"262.1\" width=\"1291.9\" height=\"1291.9\" fill=\"none\" stroke=\"#E63946\" stroke-width=\"31.4\" opacity=\"0.9\" transform=\"rotate(49 1639.2 908.1)\"/>\u003crect width=\"2480\" height=\"3508\" filter=\"url(#d0_gr)\" opacity=\"0.03\"/>\u003c/svg>"},{"name":"Waves 02","style":"waves","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"2480\" height=\"3508\" viewBox=\"0 0 2480 3508\">\u003cdefs>\u003cfilter id=\"d1_gr\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\">\u003cfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\" stitchTiles=\"stitch\"/>\u003cfeColorMatrix type=\"matrix\" values=\"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0.55 0.55 0 0\"/>\u003c/filter>\u003c/defs>\u003crect width=\"2480\" height=\"3508\" fill=\"#fbfefa\"/>\u003cpath d=\"M0 1254.3 C 496.0 883.8, 744.0 1624.8, 1240.0 1254.3 S 2033.6 1091.1, 2480.0 1335.9 L 2480 3508 L 0 3508 Z\" fill=\"#E63946\" opacity=\"0.7\"/>\u003cpath d=\"M0 1737.6 C 496.0 2061.7, 744.0 1413.4, 1240.0 1737.6 S 2033.6 2035.0, 2480.0 1588.9 L 2480 3508 L 0 3508 Z\" fill=\"#1D3557\" opacity=\"0.8\"/>\u003cpath d=\"M0 2108.1 C 496.0 2484.4, 744.0 1731.7, 1240.0 2108.1 S 2033.6 1818.0, 2480.0 2253.1 L 2480 3508 L 0 3508 Z\" fill=\"#A8DADC\" opacity=\"0.9\"/>\u003cpath d=\"M0 2462.1 C 496.0 2691.9, 744.0 2232.4, 1240.0 2462.1 S 2033.6 2795.4, 2480.0 2295.5 L 2480 3508 L 0 3508 Z\" fill=\"#457B9D\" opacity=\"0.9\"/>\u003cpath d=\"M0 2945.1 C 496.0 2787.4, 744.0 3102.8, 1240.0 2945.1 S 2033.6 2585.7, 2480.0 3124.8 L 2480 3508 L 0 3508 Z\" fill=\"#bcc3ba\" opacity=\"1.0\"/>\u003crect width=\"2480\" height=\"3508\" filter=\"url(#d1_gr)\" opacity=\"0.03\"/>\u003c/svg>"},{"name":"Dot Grid 03","style":"grid","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"2480\" height=\"3508\" viewBox=\"0 0 2480 3508\">\u003cdefs>\u003cfilter id=\"d2_gr\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\">\u003cfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\" stitchTiles=\"stitch\"/>\u003cfeColorMatrix type=\"matrix\" values=\"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0.55 0.55 0 0\"/>\u003c/filter>\u003c/defs>\u003crect width=\"2480\" height=\"3508\" fill=\"#fbfefa\"/>\u003ccircle cx=\"72.9\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.1\"/>\u003ccircle cx=\"218.8\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.1\"/>\u003ccircle cx=\"364.7\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.1\"/>\u003ccircle cx=\"510.6\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"802.4\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"948.2\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1240.0\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1385.9\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1531.8\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1969.4\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2115.3\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"2261.2\" cy=\"72.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2407.1\" cy=\"72.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"72.9\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.1\"/>\u003ccircle cx=\"218.8\" cy=\"218.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.1\"/>\u003ccircle cx=\"364.7\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"218.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"218.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1385.9\" cy=\"218.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1969.4\" cy=\"218.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"2115.3\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2407.1\" cy=\"218.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.1\"/>\u003ccircle cx=\"510.6\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"802.4\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"948.2\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1240.0\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1969.4\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2115.3\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"2261.2\" cy=\"364.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"364.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.1\"/>\u003ccircle cx=\"218.8\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"948.2\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1385.9\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2115.3\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2261.2\" cy=\"510.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"510.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"802.4\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"948.2\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1969.4\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"2261.2\" cy=\"656.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"656.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"802.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"948.2\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"802.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"802.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"802.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1969.4\" cy=\"802.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"802.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"802.4\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"1094.1\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"948.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"948.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"218.8\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"802.4\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1823.5\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1094.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"1094.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"656.5\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1677.6\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1240.0\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"1240.0\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1385.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"1385.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"72.9\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"510.6\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1531.8\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1531.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"1531.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.2\"/>\u003ccircle cx=\"364.7\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"1385.9\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1677.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2407.1\" cy=\"1677.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.2\"/>\u003ccircle cx=\"218.8\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1240.0\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2261.2\" cy=\"1823.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"1823.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"218.8\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"1969.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"1969.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"1969.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"1969.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"1969.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"1969.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"218.8\" cy=\"2115.3\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2115.3\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"2115.3\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"1094.1\" cy=\"2115.3\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"2115.3\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"2115.3\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2115.3\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"218.8\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"948.2\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1969.4\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"2261.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2261.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"218.8\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1823.5\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1969.4\" cy=\"2407.1\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2407.1\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"218.8\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"802.4\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1969.4\" cy=\"2552.9\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2552.9\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"218.8\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"656.5\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"802.4\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1677.6\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1969.4\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"2698.8\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2698.8\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"218.8\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"656.5\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"802.4\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1531.8\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1677.6\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1969.4\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"2844.7\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2844.7\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"72.9\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"510.6\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"656.5\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"802.4\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1531.8\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1677.6\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1969.4\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"2990.6\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"2990.6\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.6\"/>\u003ccircle cx=\"72.9\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.3\"/>\u003ccircle cx=\"218.8\" cy=\"3136.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"510.6\" cy=\"3136.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"656.5\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1385.9\" cy=\"3136.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1531.8\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2261.2\" cy=\"3136.5\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.6\"/>\u003ccircle cx=\"2407.1\" cy=\"3136.5\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.6\"/>\u003ccircle cx=\"72.9\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.3\"/>\u003ccircle cx=\"364.7\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"510.6\" cy=\"3282.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"656.5\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"802.4\" cy=\"3282.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"3282.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1240.0\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1531.8\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1677.6\" cy=\"3282.4\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"2407.1\" cy=\"3282.4\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.6\"/>\u003ccircle cx=\"72.9\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"218.8\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"364.7\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"510.6\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"656.5\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"802.4\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.4\"/>\u003ccircle cx=\"948.2\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.4\"/>\u003ccircle cx=\"1094.1\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1240.0\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"1385.9\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1677.6\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.5\"/>\u003ccircle cx=\"1823.5\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.5\"/>\u003ccircle cx=\"2115.3\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.6\"/>\u003ccircle cx=\"2261.2\" cy=\"3428.2\" r=\"20.4\" fill=\"#E63946\" opacity=\"0.6\"/>\u003ccircle cx=\"2407.1\" cy=\"3428.2\" r=\"20.4\" fill=\"#bcc3ba\" opacity=\"0.6\"/>\u003ccircle cx=\"616.9\" cy=\"1690.9\" r=\"329.0\" fill=\"#A8DADC\" opacity=\"0.9\"/>\u003ccircle cx=\"441.1\" cy=\"2446.9\" r=\"194.6\" fill=\"#457B9D\" opacity=\"0.9\"/>\u003crect width=\"2480\" height=\"3508\" filter=\"url(#d2_gr)\" opacity=\"0.03\"/>\u003c/svg>"},{"name":"Geometric 04","style":"geometric","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"2480\" height=\"3508\" viewBox=\"0 0 2480 3508\">\u003cdefs>\u003cfilter id=\"d3_gr\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\">\u003cfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\" stitchTiles=\"stitch\"/>\u003cfeColorMatrix type=\"matrix\" values=\"0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0.55 0.55 0 0\"/>\u003c/filter>\u003c/defs>\u003crect width=\"2480\" height=\"3508\" fill=\"#fbfefa\"/>\u003cpolygon points=\"1608.9,2582.7 2257.6,3701.2 960.2,3701.2\" fill=\"#bcc3ba\" opacity=\"0.5\" transform=\"rotate(107 1608.9 3328.3)\"/>\u003crect x=\"542.9\" y=\"16.5\" width=\"612.1\" height=\"612.1\" fill=\"none\" stroke=\"#E63946\" stroke-width=\"16.2\" opacity=\"0.6\" transform=\"rotate(29 849.0 322.5)\"/>\u003cpolygon points=\"1874.6,442.5 2150.9,918.8 1598.3,918.8\" fill=\"none\" stroke=\"#A8DADC\" stroke-width=\"33.7\" opacity=\"0.6\" transform=\"rotate(230 1874.6 760.0)\"/>\u003cpolygon points=\"656.8,2266.6 1244.8,3280.5 68.7,3280.5\" fill=\"#1D3557\" opacity=\"0.2\" transform=\"rotate(198 656.8 2942.5)\"/>\u003crect width=\"2480\" height=\"3508\" filter=\"url(#d3_gr)\" opacity=\"0.03\"/>\u003c/svg>"}],"components":[{"name":"Sticker Star 01","filename":"sticker-star-01","style":"star","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003cpolygon points=\"250.0,50.0 281.8,218.2 450.0,250.0 281.8,281.8 250.0,450.0 218.2,281.8 50.0,250.0 218.2,218.2\" fill=\"#1D3557\"/>\u003ccircle cx=\"250\" cy=\"250\" r=\"28\" fill=\"#457B9D\"/>\u003c/svg>","W":500,"H":500},{"name":"Sticker Blob 02","filename":"sticker-blob-02","style":"blob","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003cpath d=\"M444.7 250.0C440.4 293.1 398.8 339.3 366.4 366.4C333.9 393.4 288.3 412.8 250.0 412.4C211.7 411.9 165.1 390.8 136.3 363.7C107.5 336.7 79.4 290.2 77.2 250.0C74.9 209.8 94.0 147.7 122.8 122.8C151.6 97.9 205.1 103.1 250.0 100.6C294.9 98.1 359.9 82.7 392.4 107.6C424.9 132.5 449.1 206.9 444.7 250.0Z\" fill=\"#457B9D\"/>\u003c/svg>","W":500,"H":500},{"name":"Sticker Burst 03","filename":"sticker-burst-03","style":"burst","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003cpolygon points=\"460.0,250.0 406.9,281.2 444.0,330.4 383.0,338.9 398.5,398.5 338.9,383.0 330.4,444.0 281.2,406.9 250.0,460.0 218.8,406.9 169.6,444.0 161.1,383.0 101.5,398.5 117.0,338.9 56.0,330.4 93.1,281.2 40.0,250.0 93.1,218.8 56.0,169.6 117.0,161.1 101.5,101.5 161.1,117.0 169.6,56.0 218.8,93.1 250.0,40.0 281.2,93.1 330.4,56.0 338.9,117.0 398.5,101.5 383.0,161.1 444.0,169.6 406.9,218.8\" fill=\"#E63946\"/>\u003ccircle cx=\"250\" cy=\"250\" r=\"105\" fill=\"#f0f3ef\" opacity=\"0.85\"/>\u003c/svg>","W":500,"H":500},{"name":"Sticker Ring 04","filename":"sticker-ring-04","style":"ring","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003ccircle cx=\"250\" cy=\"250\" r=\"190\" fill=\"none\" stroke=\"#f0f3ef\" stroke-width=\"32\"/>\u003ccircle cx=\"250\" cy=\"250\" r=\"140\" fill=\"none\" stroke=\"#1D3557\" stroke-width=\"12\" stroke-dasharray=\"14 12\"/>\u003ccircle cx=\"250\" cy=\"250\" r=\"55\" fill=\"#f0f3ef\"/>\u003c/svg>","W":500,"H":500},{"name":"Sticker Arrow 05","filename":"sticker-arrow-05","style":"arrow","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003cpath d=\"M120 200 L260 200 L260 120 L380 250 L260 380 L260 300 L120 300 Z\" fill=\"#1D3557\"/>\u003c/svg>","W":500,"H":500},{"name":"Sticker Torn Edge 06","filename":"sticker-torn-edge-06","style":"torn-edge","svg":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 500 500\">\u003cpath d=\"M60 90 L60.0 85.5 L80.0 80.4 L100.0 92.6 L120.0 89.2 L140.0 95.0 L160.0 83.9 L180.0 84.2 L200.0 98.7 L220.0 94.7 L240.0 88.3 L260.0 79.0 L280.0 93.7 L300.0 81.5 L320.0 83.3 L340.0 99.0 L360.0 91.9 L380.0 99.8 L400.0 87.2 L420.0 93.5 L440.0 85.3 L440 410 L440.0 406.8 L420.0 405.8 L400.0 413.8 L380.0 398.4 L360.0 413.9 L340.0 400.5 L320.0 415.9 L300.0 406.5 L280.0 412.0 L260.0 401.2 L240.0 417.9 L220.0 410.4 L200.0 398.3 L180.0 412.2 L160.0 420.6 L140.0 409.5 L120.0 417.6 L100.0 413.9 L80.0 417.9 L60.0 410.2 Z\" fill=\"#457B9D\" opacity=\"0.9\"/>\u003c/svg>","W":500,"H":500}],"imagePrompts":{"textureBackground":"Abstract textured background, Slate Summit aesthetic. Vintage paper grain texture with subtle halftone dot pattern. Muted duotone color grade using #1D3557 and #457B9D. No text, no letters, no words, no logos, no people, no faces, no objects — pure abstract texture only. Flat even lighting, no vignette, edge-to-edge texture, seamless.","components":[{"name":"Vintage Flower Illustration","prompt":"A single isolated vintage flower illustration in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style."},{"name":"Retro Boombox Line-Art","prompt":"A single isolated retro boombox line-art in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style."},{"name":"Torn Paper Scrap","prompt":"A single isolated torn paper scrap in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style."},{"name":"Halftone Sun Burst Shape","prompt":"A single isolated halftone sun burst shape in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style."},{"name":"Abstract Squiggle Line Doodle","prompt":"A single isolated abstract squiggle line doodle in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style."}]},"files":{"css":"/* Slate Summit — design tokens generated by Design Agent */\n@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Inter:wght@400;700&display=swap');\n\n:root {\n  --color-bg: #fbfefa;\n  --color-surface: #f0f3ef;\n  --color-primary: #1D3557;\n  --color-secondary: #457B9D;\n  --color-accent: #E63946;\n  --color-text: #14161c;\n  --color-muted: #757779;\n  --color-brand-1: #1D3557;\n  --color-brand-2: #457B9D;\n  --color-brand-3: #A8DADC;\n  --color-brand-4: #F1FAEE;\n  --color-brand-5: #E63946;\n  --font-display: 'IBM Plex Sans', sans-serif;\n  --font-body: 'Inter', sans-serif;\n}\n\nh1 { font: 700 clamp(2.8rem, 6vw, 4.5rem)/1.05 var(--font-display); letter-spacing: -0.02em; color: var(--color-text); }\nh2 { font: 600 clamp(1.5rem, 3vw, 2.25rem)/1.15 var(--font-display); letter-spacing: -0.01em; color: var(--color-text); }\nbody { font: 400 1rem/1.65 var(--font-body); color: var(--color-text); background: var(--color-bg); }\n.caption { font: 700 0.8rem/1.4 var(--font-body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-muted); }\n","themeJson":"{\n  \"name\": \"Slate Summit\",\n  \"brief\": \"corporate finance summit 2026\",\n  \"source\": \"Built-in theme engine\",\n  \"mood\": \"Slate Summit\",\n  \"vibe\": \"minimal\",\n  \"dark\": false,\n  \"rationale\": \"\",\n  \"colors\": [\n    \"#1D3557\",\n    \"#457B9D\",\n    \"#A8DADC\",\n    \"#F1FAEE\",\n    \"#E63946\"\n  ],\n  \"roles\": {\n    \"bg\": \"#fbfefa\",\n    \"surface\": \"#f0f3ef\",\n    \"primary\": \"#1D3557\",\n    \"secondary\": \"#457B9D\",\n    \"accent\": \"#E63946\",\n    \"text\": \"#14161c\",\n    \"muted\": \"#757779\"\n  },\n  \"typography\": {\n    \"header\": {\n      \"family\": \"IBM Plex Sans\",\n      \"weight\": 700,\n      \"fallback\": \"sans-serif\"\n    },\n    \"body\": {\n      \"family\": \"Inter\",\n      \"weight\": 400\n    },\n    \"scale\": [\n      {\n        \"el\": \"Header / H1\",\n        \"font\": \"IBM Plex Sans\",\n        \"weight\": 700,\n        \"size\": \"clamp(2.8rem, 6vw, 4.5rem)\",\n        \"lh\": \"1.05\",\n        \"ls\": \"-0.02em\",\n        \"extra\": \"\"\n      },\n      {\n        \"el\": \"Subheader / H2\",\n        \"font\": \"IBM Plex Sans\",\n        \"weight\": 600,\n        \"size\": \"clamp(1.5rem, 3vw, 2.25rem)\",\n        \"lh\": \"1.15\",\n        \"ls\": \"-0.01em\",\n        \"extra\": \"\"\n      },\n      {\n        \"el\": \"Body\",\n        \"font\": \"Inter\",\n        \"weight\": 400,\n        \"size\": \"1rem\",\n        \"lh\": \"1.65\",\n        \"ls\": \"0\",\n        \"extra\": \"\"\n      },\n      {\n        \"el\": \"Caption / Label\",\n        \"font\": \"Inter\",\n        \"weight\": 700,\n        \"size\": \"0.8rem\",\n        \"lh\": \"1.4\",\n        \"ls\": \"0.09em\",\n        \"extra\": \"text-transform: uppercase;\"\n      }\n    ],\n    \"googleFontsUrl\": \"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Inter:wght@400;700&display=swap\"\n  },\n  \"canvas\": {\n    \"key\": \"a4\",\n    \"width\": 2480,\n    \"height\": 3508\n  },\n  \"seed\": 430342,\n  \"styles\": [\n    \"geometric\",\n    \"waves\",\n    \"grid\"\n  ],\n  \"imagePrompts\": {\n    \"textureBackground\": \"Abstract textured background, Slate Summit aesthetic. Vintage paper grain texture with subtle halftone dot pattern. Muted duotone color grade using #1D3557 and #457B9D. No text, no letters, no words, no logos, no people, no faces, no objects — pure abstract texture only. Flat even lighting, no vignette, edge-to-edge texture, seamless.\",\n    \"components\": [\n      {\n        \"name\": \"Vintage Flower Illustration\",\n        \"prompt\": \"A single isolated vintage flower illustration in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.\"\n      },\n      {\n        \"name\": \"Retro Boombox Line-Art\",\n        \"prompt\": \"A single isolated retro boombox line-art in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.\"\n      },\n      {\n        \"name\": \"Torn Paper Scrap\",\n        \"prompt\": \"A single isolated torn paper scrap in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.\"\n      },\n      {\n        \"name\": \"Halftone Sun Burst Shape\",\n        \"prompt\": \"A single isolated halftone sun burst shape in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.\"\n      },\n      {\n        \"name\": \"Abstract Squiggle Line Doodle\",\n        \"prompt\": \"A single isolated abstract squiggle line doodle in collage-art style, Slate Summit aesthetic, #1D3557 and #E63946 color palette. Centered on a plain flat white background for easy background removal. No text, no shadows, no other objects, no scene, no environment — just the one object, clean edges, vector-illustration style.\"\n      }\n    ]\n  }\n}"}}</script>
+<script>
+(function () {
+  var DATA = JSON.parse(document.getElementById('design-data').textContent);
+  var FONTS_LINK = '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">';
+
+  DATA.svgs.forEach(function (d, i) {
+    var el = document.getElementById('prev' + i);
+    if (el) el.innerHTML = d.svg;
+  });
+
+  DATA.components.forEach(function (c, i) {
+    var el = document.getElementById('cprev' + i);
+    if (el) el.innerHTML = c.svg;
+  });
+
+  var toastTimer = null;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = ''; }, 1600);
+  }
+  function copyText(s, msg) {
+    function done() { toast(msg || 'Copied'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(s).then(done, function () { fallbackCopy(s); done(); });
+    } else { fallbackCopy(s); done(); }
+  }
+  function fallbackCopy(s) {
+    var ta = document.createElement('textarea');
+    ta.value = s; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  function saveBlob(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  function fileBase(i) {
+    return DATA.slug + '-' + DATA.svgs[i].style + '-' + (i + 1);
+  }
+  function pngBlob(svg, w, h, cb) {
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement('canvas');
+      c.width = w || DATA.W; c.height = h || DATA.H;
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(cb, 'image/png');
+    };
+    img.onerror = function () { toast('PNG render failed — download the SVG instead'); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  document.querySelectorAll('.swatch').forEach(function (el) {
+    el.addEventListener('click', function () { copyText(el.getAttribute('data-copy'), el.getAttribute('data-copy') + ' copied'); });
+  });
+
+  // Background downloads
+  document.querySelectorAll('.btn-svg').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = +b.getAttribute('data-i');
+      saveBlob(new Blob([DATA.svgs[i].svg], { type: 'image/svg+xml' }), fileBase(i) + '.svg');
+    });
+  });
+  document.querySelectorAll('.btn-png').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = +b.getAttribute('data-i');
+      b.textContent = '...';
+      pngBlob(DATA.svgs[i].svg, DATA.W, DATA.H, function (blob) {
+        b.textContent = 'PNG';
+        if (blob) saveBlob(blob, fileBase(i) + '.png');
+      });
+    });
+  });
+
+  // Component sticker downloads
+  document.querySelectorAll('.btn-comp-svg').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = +b.getAttribute('data-ci');
+      saveBlob(new Blob([DATA.components[i].svg], { type: 'image/svg+xml' }), DATA.components[i].filename + '.svg');
+    });
+  });
+  document.querySelectorAll('.btn-comp-png').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = +b.getAttribute('data-ci');
+      b.textContent = '...';
+      pngBlob(DATA.components[i].svg, 500, 500, function (blob) {
+        b.textContent = 'PNG';
+        if (blob) saveBlob(blob, DATA.components[i].filename + '.png');
+      });
+    });
+  });
+
+  // CSS and link copy
+  document.getElementById('copy-css').addEventListener('click', function () { copyText(DATA.files.css, 'CSS tokens copied'); });
+  document.getElementById('copy-link').addEventListener('click', function () { copyText(FONTS_LINK, 'Google Fonts link copied'); });
+  document.getElementById('dl-json').addEventListener('click', function () {
+    saveBlob(new Blob([DATA.files.themeJson], { type: 'application/json' }), DATA.slug + '-theme.json');
+  });
+
+  // Prompt copies
+  var bgPromptEl = document.getElementById('copy-bg-prompt');
+  if (bgPromptEl) {
+    bgPromptEl.addEventListener('click', function () { copyText(DATA.imagePrompts.textureBackground, 'Texture prompt copied'); });
+  }
+  var allPromptsEl = document.getElementById('copy-all-prompts');
+  if (allPromptsEl) {
+    allPromptsEl.addEventListener('click', function () {
+      var full = DATA.imagePrompts.components.map(function (cp) { return '## ' + cp.name + '
+' + cp.prompt; }).join('
+
+');
+      copyText(full, 'All component prompts copied');
+    });
+  }
+  document.querySelectorAll('.btn-copy-cp').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var idx = +b.getAttribute('data-cidx');
+      copyText(DATA.imagePrompts.components[idx].prompt, DATA.imagePrompts.components[idx].name + ' prompt copied');
+    });
+  });
+
+  // ZIP download (organizes into backgrounds/ and components/)
+  document.getElementById('zip-all').addEventListener('click', function () {
+    var btn = this;
+    if (typeof JSZip === 'undefined') { toast('JSZip CDN unreachable — download files individually'); return; }
+    btn.disabled = true;
+    btn.textContent = 'Packing files...';
+    var zip = new JSZip();
+    zip.file('theme.json', DATA.files.themeJson);
+    zip.file('typography.css', DATA.files.css);
+    zip.file('README.txt',
+      DATA.theme.name + ' — design kit
+
+' +
+      'backgrounds/      Full-bleed background designs (no text, vector SVG + PNG)
+' +
+      'components/       Standalone transparent stickers & shape overlays
+' +
+      'theme.json        Palette, roles, fonts, seed & image-model prompts
+' +
+      'typography.css    Drop-in CSS tokens + Google Fonts import
+');
+
+    DATA.svgs.forEach(function (d, i) {
+      zip.file('backgrounds/' + fileBase(i) + '.svg', d.svg);
+    });
+    DATA.components.forEach(function (c) {
+      zip.file('components/' + c.filename + '.svg', c.svg);
+    });
+
+    var allRenders = [];
+    DATA.svgs.forEach(function (d, i) {
+      allRenders.push({ path: 'backgrounds/' + fileBase(i) + '.png', svg: d.svg, w: DATA.W, h: DATA.H });
+    });
+    DATA.components.forEach(function (c) {
+      allRenders.push({ path: 'components/' + c.filename + '.png', svg: c.svg, w: 500, h: 500 });
+    });
+
+    var total = allRenders.length;
+    var idx = 0;
+    function next() {
+      if (idx >= total) {
+        zip.generateAsync({ type: 'blob' }).then(function (blob) {
+          saveBlob(blob, DATA.slug + '-design-kit.zip');
+          btn.disabled = false;
+          btn.textContent = '↓ Download full kit (ZIP)';
+        });
+        return;
+      }
+      var item = allRenders[idx++];
+      btn.textContent = 'Packing ' + idx + '/' + total + '...';
+      pngBlob(item.svg, item.w, item.h, function (blob) {
+        if (blob) zip.file(item.path, blob);
+        next();
+      });
+    }
+    next();
+  });
+})();
+</script>
+</body>
+</html>

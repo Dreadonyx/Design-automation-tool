@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.studio/
+playwright-report/
+
+.runtime/
+*.zip
+.DS_Store
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,26 @@
+services:
+  studio:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      STUDIO_DATA: /data
+      STUDIO_HOST: 0.0.0.0
+      OLLAMA_ENABLED: "0"
+    ports:
+      - "127.0.0.1:${STUDIO_PORT:-7860}:7860"
+    volumes:
+      - studio-data:/data
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  studio-data:

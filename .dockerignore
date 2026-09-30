@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+.studio
+.runtime
+.venv
+__pycache__
+*.py[cod]
+test_img
+tests
+test
+workflow
+docs
+*.zip
