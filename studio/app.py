@@ -15,6 +15,7 @@ from flask import Flask, jsonify, request, send_file, abort
 from PIL import Image, ImageOps, UnidentifiedImageError
 from werkzeug.exceptions import HTTPException
 from .themes import make_theme, image_prompt, website_prompt, FONTS
+from .components import component_css, component_snippets, component_preview_html
 from . import providers, intelligence
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -212,6 +213,11 @@ def create_app(data_dir=None):
 
     @app.get('/api/themes/<tid>/web-prompt')
     def web_prompt(tid): return jsonify(prompt=website_prompt(get('theme',tid)))
+
+    @app.get('/api/themes/<tid>/components')
+    def components(tid):
+        t=get('theme',tid)
+        return jsonify(css=component_css(t),snippets=component_snippets(t),preview=component_preview_html(t))
 
     def run_job(jid):
         job=get('job',jid); job['status']='running'; save('job',job)
