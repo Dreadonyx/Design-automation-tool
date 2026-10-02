@@ -1,3 +1,4 @@
+import colorsys
 import hashlib
 import re
 
@@ -65,12 +66,79 @@ def make_theme(data, previous=None):
 
 COMPOSITIONS = ['focal motif on the right, quiet left third', 'central focal motif with generous outer margins', 'diagonal movement from lower left to upper right', 'framing motifs along the edges, quiet center', 'large cropped motif in the lower third', 'asymmetric small motifs with generous negative space']
 
+SCENE_VARIANTS = ['a street-level thoroughfare view, the primary environment described in the brief',
+    'the exterior facade and architecture of a tall structure or building typical of this world, seen from a distance',
+    'a close-up view of a single storefront, entrance or stall front with signage and detail typical of this world',
+    'a high aerial or rooftop vantage point looking down from well above street level across rooftops and the skyline; the ground-level street should NOT fill the frame',
+    'an interior or enclosed space typical of this world, such as a shop, station, hall or gathering space',
+    'a transportation, infrastructure or transitional space typical of this world, such as a crossing, passage, vehicle or transit area']
 
-def image_prompt(theme,index,width,height):
+PALETTE_FAMILIES = [('pink and violet',320,278), ('blue and light blue',215,196), ('green and light green',132,96),
+    ('amber and gold',36,49), ('red and rose',356,14), ('purple and lavender',270,290),
+    ('teal and cyan',174,191), ('orange and peach',24,36)]
+
+NAMED_HUES = [(0,'red'), (20,'red-orange'), (35,'orange'), (50,'amber'), (60,'yellow'), (80,'yellow-green'),
+    (100,'lime-green'), (140,'green'), (160,'teal-green'), (180,'teal'), (195,'cyan'), (210,'sky-blue'),
+    (225,'azure-blue'), (240,'blue'), (260,'indigo'), (275,'violet'), (290,'purple'), (310,'magenta'),
+    (325,'pink-magenta'), (340,'pink'), (355,'rose'), (360,'red')]
+
+
+def hex_to_hls(hexcolor):
+    r,g,b = (int(hexcolor[i:i+2],16)/255 for i in (1,3,5))
+    return colorsys.rgb_to_hls(r,g,b)
+
+
+def hls_to_hex(h,l,s):
+    r,g,b = colorsys.hls_to_rgb(h%1.0, min(max(l,0.0),1.0), min(max(s,0.0),1.0))
+    return '#%02X%02X%02X' % (round(r*255), round(g*255), round(b*255))
+
+
+def color_name(hexcolor):
+    h,l,s = hex_to_hls(hexcolor)
+    if s<0.12:
+        if l<0.18: return 'near-black'
+        if l>0.85: return 'near-white'
+        return 'neutral gray'
+    degrees = h*360
+    name = min(NAMED_HUES, key=lambda p: min(abs(p[0]-degrees), 360-abs(p[0]-degrees)))[1]
+    shade = 'deep ' if l<0.35 else ('pale ' if l>0.72 else '')
+    return shade+name
+
+
+def family_palette(index):
+    name, dark_hue, light_hue = PALETTE_FAMILIES[index % len(PALETTE_FAMILIES)]
+    return name, dict(bg='#0A0A0C', surface='#17171A', text='#F5F5F6', muted='#8A8A90',
+        primary=hls_to_hex(dark_hue/360, 0.46, 0.85), secondary=hls_to_hex(light_hue/360, 0.70, 0.75),
+        accent=hls_to_hex(dark_hue/360, 0.88, 0.35))
+
+
+def family_avoid_words(index):
+    others = [w.strip() for i,(name,_,_) in enumerate(PALETTE_FAMILIES) if i!=index%len(PALETTE_FAMILIES) for w in name.split(' and ')]
+    return ', '.join(dict.fromkeys(others))
+
+
+def image_prompt(theme, index, width, height, variation='standard'):
+    palette, composition, series_note, override = theme['palette'], COMPOSITIONS[index%len(COMPOSITIONS)], '', ''
+    if variation=='palette':
+        family, palette = family_palette(index)
+        composition = COMPOSITIONS[0]
+        avoid_words = family_avoid_words(index)
+        override = (" Color override: disregard any specific colors named in the brief or art direction above; "
+            f"they do not apply to this image. Use ONLY black-and-white / neutral grayscale plus {family} tones. "
+            f"Do not render {avoid_words}, or any other saturated hue, anywhere in this image. ")
+        series_note = (" This is one of a series sharing the exact same subject, framing and composition; "
+            "only the accent color family should change between images.")
+    elif variation=='design':
+        composition = SCENE_VARIANTS[index%len(SCENE_VARIANTS)]
+        series_note = (' This is one of a series exploring different locations within the same visual world described above: '
+            'choose a genuinely different subject or location each time, not just a different camera angle on the same spot. '
+            'Keep the exact same color palette and lighting treatment identical across the series.')
+    colors = ', '.join(f"{k} is {color_name(v)} ({v})" for k,v in palette.items() if k in ['primary','secondary','accent'])
     return (f"Create a finished text-free design background. Brief: {theme['brief']}. "
-            f"Art direction: {theme['direction']}. Palette roles: " + ', '.join(f'{k} {v}' for k,v in theme['palette'].items()) +
-            f". Composition: {COMPOSITIONS[index%len(COMPOSITIONS)]}. Canvas {width} by {height}. "
-            'Maintain the same motif language, lighting, texture and color hierarchy across this collection. '
+            f"Art direction: {theme['direction']}.{override} Dominant colors: {colors}. Render signage, lighting and accent elements "
+            "predominantly in these color families; avoid introducing other strongly saturated hues not listed here. "
+            f"Composition and subject: {composition}.{series_note} Canvas {width} by {height}. "
+            'Maintain the same motif language and texture across this collection unless instructed otherwise above. '
             f"Avoid: {theme['avoid']}. No lettering or typography in the artwork.")
 
 

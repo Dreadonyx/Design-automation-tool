@@ -223,7 +223,7 @@ def create_app(data_dir=None):
             for i in range(job['count']):
                 if get('job',jid).get('cancel'): job['status']='cancelled'; break
                 seed=(job['seed']+i)%2147483647
-                prompt=image_prompt(theme,i,job['width'],job['height'])
+                prompt=image_prompt(theme,i,job['width'],job['height'],job.get('variation','standard'))
                 if job['reference_mode']=='image':
                     prompt+=' '+ ' '.join(f"Input image {index}: use for {r['role']}; {r['notes']}." for index,r in enumerate(pixel_refs))
                 for r in refs:
@@ -268,7 +268,7 @@ def create_app(data_dir=None):
                     with Image.open(io.BytesIO(raw)) as im: extension={'PNG':'png','JPEG':'jpg','WEBP':'webp'}[im.format]
                     (root/'files'/f'{aid}.{extension}').write_bytes(raw)
                     if svg: (root/'files'/f'{aid}.svg').write_text(svg)
-                    asset=dict(id=aid,theme_id=theme['id'],theme_version=theme['version'],job_id=jid,seed=seed,prompt=prompt,provider=selected['id'],model=selected['model'],kind=selected['kind'],quality=job['quality'],width=actual_w,height=actual_h,requested_width=job['width'],requested_height=job['height'],path=f'{aid}.{extension}',url=f'/api/files/{aid}.{extension}',svg=f'/api/files/{aid}.svg' if svg else None,attempts=attempts,reference_mode=job['reference_mode'],snapshot=theme)
+                    asset=dict(id=aid,theme_id=theme['id'],theme_version=theme['version'],job_id=jid,seed=seed,prompt=prompt,provider=selected['id'],model=selected['model'],kind=selected['kind'],quality=job['quality'],width=actual_w,height=actual_h,requested_width=job['width'],requested_height=job['height'],path=f'{aid}.{extension}',url=f'/api/files/{aid}.{extension}',svg=f'/api/files/{aid}.svg' if svg else None,attempts=attempts,reference_mode=job['reference_mode'],variation=job.get('variation','standard'),snapshot=theme)
                     save('asset',asset); job['assets'].append(aid)
                 else: job['failures'].append(dict(index=i,attempts=attempts))
                 job['completed']=i+1
@@ -295,6 +295,8 @@ def create_app(data_dir=None):
             if not eligible: abort(409,description='No final-quality provider is configured. Connect a free-tier hosted provider, import a finished image, or explicitly choose Draft mode for local previews.')
         mode=d.get('reference_mode','palette')
         if mode not in ['palette','image']: raise ValueError('Invalid reference mode')
+        variation=d.get('variation','standard')
+        if variation not in ['standard','palette','design']: raise ValueError('Choose a valid collection style')
         if mode=='image' and quality=='final':
             pixel_count=sum(get('reference',r)['kind']=='image' and get('reference',r)['role']!='palette' for r in theme['references'])
             if not any(p['reference'] and pixel_count<=p.get('max_references',1) for p in eligible):
@@ -303,7 +305,7 @@ def create_app(data_dir=None):
             raise ValueError('Upload an image with style or layout role for image guidance')
         with mutex:
             if sum(j['status'] in ['queued','running'] for j in all_items('job'))>=3: abort(429,description='Three batches are already queued. Wait for one to finish.')
-            job=dict(id=ident(),theme_id=theme['id'],snapshot=theme,count=count,width=width,height=height,seed=seed,chain=chain,reference_mode=mode,quality=quality,status='queued',completed=0,assets=[],failures=[],message='Waiting for the image worker',cancel=False,created=time.time())
+            job=dict(id=ident(),theme_id=theme['id'],snapshot=theme,count=count,width=width,height=height,seed=seed,chain=chain,reference_mode=mode,variation=variation,quality=quality,status='queued',completed=0,assets=[],failures=[],message='Waiting for the image worker',cancel=False,created=time.time())
             save('job',job); executor.submit(run_job,job['id'])
         return job
 
@@ -312,7 +314,7 @@ def create_app(data_dir=None):
 
     @app.post('/api/assets/<aid>/regenerate')
     def regenerate(aid):
-        a=get('asset',aid); d=payload(); d.update(count=1,width=a['requested_width'],height=a['requested_height'],reference_mode=a['reference_mode'],quality=a.get('quality','draft') if a.get('quality') in ['final','draft'] else d.get('quality','final'))
+        a=get('asset',aid); d=payload(); d.update(count=1,width=a['requested_width'],height=a['requested_height'],reference_mode=a['reference_mode'],variation=d.get('variation',a.get('variation','standard')),quality=a.get('quality','draft') if a.get('quality') in ['final','draft'] else d.get('quality','final'))
         return jsonify(enqueue(d,a['snapshot'])),202
 
     @app.get('/api/jobs/<jid>')
